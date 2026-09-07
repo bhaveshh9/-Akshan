@@ -85,7 +85,11 @@ button { font-family: inherit; cursor: pointer; }
   padding: 0 24px;
   position: sticky;
   top: 0;
-  z-index: 100;
+  /* Raised from 100 -> 1000: Leaflet's internal panes (tile/marker/popup/
+     tooltip) can use z-index values up to ~650-700. Even with the
+     .map-wrapper isolation fix below, this is kept high as a defensive
+     second layer so the navbar always paints above any page content. */
+  z-index: 1000;
   overflow: hidden;
 }
 
@@ -165,6 +169,10 @@ button { font-family: inherit; cursor: pointer; }
   height: calc(100vh - var(--topnav-h));
   padding: 18px 12px;
   flex-shrink: 0;
+  /* NEW: sidebar is also position:sticky, so give it an explicit stacking
+     level — below the navbar, above ordinary main-content elements — to
+     keep scroll behavior predictable next to the map fix below. */
+  z-index: 10;
 }
 
 .sidebar-nav { display: flex; flex-direction: column; gap: 3px; }
@@ -417,7 +425,22 @@ button { font-family: inherit; cursor: pointer; }
 .meta-list dd { margin: 2px 0 0; font-size: 12px; font-weight: 600; color: var(--c-navy); }
 
 .map-card { padding: 14px; }
-.map-wrapper { position: relative; border-radius: var(--radius-sm); overflow: hidden; flex: 1; min-height: 500px; }
+.map-wrapper {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex: 1;
+  min-height: 500px;
+  /* NEW: creates a fresh stacking context scoped to this element. Leaflet
+     assigns its own internal z-index values to tile/marker/popup/tooltip
+     panes (some as high as ~650-700). Without isolation, those values are
+     compared directly against page-level elements like the sticky navbar
+     (z-index: 1000) and sidebar, and on some browsers/scroll timings the
+     map layers would paint above the navbar. `isolation: isolate` caps
+     everything inside .map-wrapper so it can never escape above page
+     chrome, regardless of what z-index Leaflet uses internally. */
+  isolation: isolate;
+}
 #main-map { width: 100%; height: 100%; min-height: 500px; }
 
 .map-controls {
