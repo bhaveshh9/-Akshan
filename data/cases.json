@@ -1,0 +1,1353 @@
+{
+  "cases": [
+    {
+      "case_id": "OS-2026-001",
+      "region": "ARABIAN SEA",
+      "priority": "HIGH",
+      "status": "ACTIVE INVESTIGATION",
+      "detection_time": "05 SEP 2026 - 08:14 UTC",
+      "last_analysis": "05 SEP 2026 - 14:32 UTC",
+      "coordinates": {
+        "lat": 19.052,
+        "lon": 68.904
+      },
+      "statistics": {
+        "spill_area_km2": 12.84,
+        "detection_confidence": 94.7,
+        "spill_age_hours": 18,
+        "risk_level": "HIGH",
+        "nearby_vessels": 8,
+        "top_suspect_score": 87
+      },
+      "satellite": {
+        "platform": "SENTINEL-1",
+        "sensor": "SAR (C-BAND)",
+        "acquisition_time": "05 SEP 2026 - 07:52 UTC",
+        "resolution": "10m x 10m",
+        "image": "/static/images/satellite-spill-1.png",
+        "segmentation_image": "/static/images/968.png"
+      },
+      "case_details": {
+        "location": "ARABIAN SEA, 140KM WEST OF MUMBAI COAST",
+        "coordinates": "19.052 N, 68.904 E",
+        "detection_time": "05 SEP 2026 - 08:14 UTC",
+        "spill_age": "18 HOURS",
+        "spill_area": "12.84 KM\u00b2",
+        "wind_speed": "14.2 KM/H, NW",
+        "ocean_current": "0.6 M/S, SE",
+        "drift_speed": "1.8 KM/H",
+        "analysis_status": "SEGMENTATION COMPLETE"
+      },
+      "spill_geometry": {
+        "total_area_km2": 12.84,
+        "perimeter_km": 21.6,
+        "max_length_km": 6.9,
+        "max_width_km": 2.4,
+        "centroid": {
+          "lat": 19.052,
+          "lon": 68.904
+        },
+        "polygon": [
+          [
+            68.862,
+            19.071
+          ],
+          [
+            68.881,
+            19.079
+          ],
+          [
+            68.902,
+            19.075
+          ],
+          [
+            68.921,
+            19.066
+          ],
+          [
+            68.934,
+            19.052
+          ],
+          [
+            68.929,
+            19.036
+          ],
+          [
+            68.912,
+            19.026
+          ],
+          [
+            68.891,
+            19.024
+          ],
+          [
+            68.872,
+            19.033
+          ],
+          [
+            68.86,
+            19.049
+          ],
+          [
+            68.862,
+            19.071
+          ]
+        ]
+      },
+      "drift": {
+        "estimated_origin": {
+          "lat": 19.101,
+          "lon": 68.958,
+          "time": "04 SEP 2026 - 12:30 UTC"
+        },
+        "current_location": {
+          "lat": 19.052,
+          "lon": 68.904,
+          "time": "05 SEP 2026 - 08:14 UTC"
+        },
+        "forecast_24h": {
+          "lat": 18.986,
+          "lon": 68.831,
+          "time": "06 SEP 2026 - 08:14 UTC"
+        },
+        "backward_path": [
+          [
+            68.958,
+            19.101
+          ],
+          [
+            68.941,
+            19.086
+          ],
+          [
+            68.921,
+            19.071
+          ],
+          [
+            68.904,
+            19.052
+          ]
+        ],
+        "forward_path": [
+          [
+            68.904,
+            19.052
+          ],
+          [
+            68.88,
+            19.031
+          ],
+          [
+            68.856,
+            19.008
+          ],
+          [
+            68.831,
+            18.986
+          ]
+        ]
+      },
+      "charts": {
+        "spill_area_trend": {
+          "labels": [
+            "-18H",
+            "-12H",
+            "-6H",
+            "-3H",
+            "NOW"
+          ],
+          "values": [
+            4.1,
+            6.8,
+            9.5,
+            11.2,
+            12.84
+          ]
+        },
+        "drift_speed_trend": {
+          "labels": [
+            "-18H",
+            "-12H",
+            "-6H",
+            "-3H",
+            "NOW"
+          ],
+          "values": [
+            1.2,
+            1.5,
+            1.6,
+            1.7,
+            1.8
+          ]
+        }
+      },
+      "vessels": [
+        {
+          "id": "V-001",
+          "name": "MV OCEANIC STAR",
+          "mmsi": "419001234",
+          "type": "OIL TANKER",
+          "lat": 19.098,
+          "lon": 68.952,
+          "speed_knots": 12.4,
+          "course_deg": 214,
+          "distance_from_spill_km": 1.8,
+          "distance_from_origin_km": 0.4,
+          "risk_level": "HIGH",
+          "time_correlation": 96,
+          "trajectory_match": 91,
+          "ais_anomaly": "GAP: 47 MIN NEAR ORIGIN",
+          "suspicion_score": 87,
+          "trajectory": [
+            [
+              69.3198,
+              19.6113
+            ],
+            [
+              69.1969,
+              19.4403
+            ],
+            [
+              69.0743,
+              19.2692
+            ],
+            [
+              68.952,
+              19.098
+            ]
+          ]
+        },
+        {
+          "id": "V-002",
+          "name": "MV BLUE HORIZON",
+          "mmsi": "419008821",
+          "type": "CHEMICAL TANKER",
+          "lat": 19.021,
+          "lon": 68.842,
+          "speed_knots": 9.1,
+          "course_deg": 128,
+          "distance_from_spill_km": 6.4,
+          "distance_from_origin_km": 12.9,
+          "risk_level": "MEDIUM",
+          "time_correlation": 61,
+          "trajectory_match": 58,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 62,
+          "trajectory": [
+            [
+              68.4624,
+              19.3005
+            ],
+            [
+              68.5891,
+              19.2075
+            ],
+            [
+              68.7156,
+              19.1143
+            ],
+            [
+              68.842,
+              19.021
+            ]
+          ]
+        },
+        {
+          "id": "V-003",
+          "name": "MV PACIFIC TRADER",
+          "mmsi": "371004521",
+          "type": "BULK CARRIER",
+          "lat": 19.14,
+          "lon": 68.78,
+          "speed_knots": 14.7,
+          "course_deg": 302,
+          "distance_from_spill_km": 15.2,
+          "distance_from_origin_km": 18.1,
+          "risk_level": "LOW",
+          "time_correlation": 28,
+          "trajectory_match": 22,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 34,
+          "trajectory": [
+            [
+              69.4378,
+              18.7496
+            ],
+            [
+              69.2189,
+              18.88
+            ],
+            [
+              68.9996,
+              19.0101
+            ],
+            [
+              68.78,
+              19.14
+            ]
+          ]
+        },
+        {
+          "id": "V-004",
+          "name": "MV NORTHERN WAVE",
+          "mmsi": "563002198",
+          "type": "CONTAINER SHIP",
+          "lat": 19.01,
+          "lon": 68.965,
+          "speed_knots": 18.2,
+          "course_deg": 176,
+          "distance_from_spill_km": 8.7,
+          "distance_from_origin_km": 6.1,
+          "risk_level": "LOW",
+          "time_correlation": 19,
+          "trajectory_match": 15,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 21,
+          "trajectory": [
+            [
+              68.8975,
+              19.9172
+            ],
+            [
+              68.9201,
+              19.6148
+            ],
+            [
+              68.9426,
+              19.3124
+            ],
+            [
+              68.965,
+              19.01
+            ]
+          ]
+        },
+        {
+          "id": "V-005",
+          "name": "MV DELTA MARINER",
+          "mmsi": "412009873",
+          "type": "OIL TANKER",
+          "lat": 19.078,
+          "lon": 68.921,
+          "speed_knots": 3.2,
+          "course_deg": 88,
+          "distance_from_spill_km": 2.6,
+          "distance_from_origin_km": 3.9,
+          "risk_level": "MEDIUM",
+          "time_correlation": 54,
+          "trajectory_match": 49,
+          "ais_anomaly": "SPEED DROP AT 03:10 UTC",
+          "suspicion_score": 57,
+          "trajectory": [
+            [
+              68.7519,
+              19.0723
+            ],
+            [
+              68.8083,
+              19.0742
+            ],
+            [
+              68.8646,
+              19.0761
+            ],
+            [
+              68.921,
+              19.078
+            ]
+          ]
+        },
+        {
+          "id": "V-006",
+          "name": "MV SOUTHERN CROSS",
+          "mmsi": "477002310",
+          "type": "FISHING VESSEL",
+          "lat": 18.998,
+          "lon": 68.87,
+          "speed_knots": 6.4,
+          "course_deg": 245,
+          "distance_from_spill_km": 7.9,
+          "distance_from_origin_km": 11.5,
+          "risk_level": "LOW",
+          "time_correlation": 12,
+          "trajectory_match": 9,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 14,
+          "trajectory": [
+            [
+              69.1768,
+              19.1329
+            ],
+            [
+              69.0745,
+              19.088
+            ],
+            [
+              68.9722,
+              19.043
+            ],
+            [
+              68.87,
+              18.998
+            ]
+          ]
+        },
+        {
+          "id": "V-007",
+          "name": "MV ARABIAN PIONEER",
+          "mmsi": "422003345",
+          "type": "PRODUCT TANKER",
+          "lat": 19.115,
+          "lon": 68.889,
+          "speed_knots": 10.8,
+          "course_deg": 192,
+          "distance_from_spill_km": 5.1,
+          "distance_from_origin_km": 2.2,
+          "risk_level": "MEDIUM",
+          "time_correlation": 63,
+          "trajectory_match": 55,
+          "ais_anomaly": "COURSE CHANGE AT 02:44 UTC",
+          "suspicion_score": 59,
+          "trajectory": [
+            [
+              69.0081,
+              19.6428
+            ],
+            [
+              68.9683,
+              19.4669
+            ],
+            [
+              68.9286,
+              19.2909
+            ],
+            [
+              68.889,
+              19.115
+            ]
+          ]
+        },
+        {
+          "id": "V-008",
+          "name": "MV COASTAL ENDEAVOUR",
+          "mmsi": "419007712",
+          "type": "GENERAL CARGO",
+          "lat": 18.965,
+          "lon": 68.955,
+          "speed_knots": 15.9,
+          "course_deg": 158,
+          "distance_from_spill_km": 11.3,
+          "distance_from_origin_km": 9.4,
+          "risk_level": "LOW",
+          "time_correlation": 8,
+          "trajectory_match": 6,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 9,
+          "trajectory": [
+            [
+              68.6389,
+              19.7013
+            ],
+            [
+              68.7446,
+              19.456
+            ],
+            [
+              68.8499,
+              19.2105
+            ],
+            [
+              68.955,
+              18.965
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "OS-2026-002",
+      "region": "BAY OF BENGAL",
+      "priority": "MEDIUM",
+      "status": "UNDER REVIEW",
+      "detection_time": "04 SEP 2026 - 21:40 UTC",
+      "last_analysis": "05 SEP 2026 - 11:05 UTC",
+      "coordinates": {
+        "lat": 14.512,
+        "lon": 83.986
+      },
+      "statistics": {
+        "spill_area_km2": 6.31,
+        "detection_confidence": 88.2,
+        "spill_age_hours": 31,
+        "risk_level": "MEDIUM",
+        "nearby_vessels": 6,
+        "top_suspect_score": 62
+      },
+      "satellite": {
+        "platform": "SENTINEL-1",
+        "sensor": "SAR (C-BAND)",
+        "acquisition_time": "04 SEP 2026 - 21:18 UTC",
+        "resolution": "10m x 10m",
+        "image": "/static/images/satellite-spill-2.png",
+        "segmentation_image": "/static/images/982.png"
+      },
+      "case_details": {
+        "location": "BAY OF BENGAL, 210KM EAST OF VISAKHAPATNAM",
+        "coordinates": "14.512 N, 83.986 E",
+        "detection_time": "04 SEP 2026 - 21:40 UTC",
+        "spill_age": "31 HOURS",
+        "spill_area": "6.31 KM\u00b2",
+        "wind_speed": "9.6 KM/H, SW",
+        "ocean_current": "0.4 M/S, NE",
+        "drift_speed": "1.1 KM/H",
+        "analysis_status": "SEGMENTATION COMPLETE"
+      },
+      "spill_geometry": {
+        "total_area_km2": 6.31,
+        "perimeter_km": 13.4,
+        "max_length_km": 4.2,
+        "max_width_km": 1.9,
+        "centroid": {
+          "lat": 14.512,
+          "lon": 83.986
+        },
+        "polygon": [
+          [
+            83.958,
+            14.531
+          ],
+          [
+            83.974,
+            14.539
+          ],
+          [
+            83.992,
+            14.533
+          ],
+          [
+            84.006,
+            14.519
+          ],
+          [
+            84.001,
+            14.502
+          ],
+          [
+            83.985,
+            14.492
+          ],
+          [
+            83.966,
+            14.496
+          ],
+          [
+            83.953,
+            14.512
+          ],
+          [
+            83.958,
+            14.531
+          ]
+        ]
+      },
+      "drift": {
+        "estimated_origin": {
+          "lat": 14.468,
+          "lon": 83.941,
+          "time": "03 SEP 2026 - 14:20 UTC"
+        },
+        "current_location": {
+          "lat": 14.512,
+          "lon": 83.986,
+          "time": "04 SEP 2026 - 21:40 UTC"
+        },
+        "forecast_24h": {
+          "lat": 14.549,
+          "lon": 84.037,
+          "time": "05 SEP 2026 - 21:40 UTC"
+        },
+        "backward_path": [
+          [
+            83.941,
+            14.468
+          ],
+          [
+            83.958,
+            14.483
+          ],
+          [
+            83.972,
+            14.498
+          ],
+          [
+            83.986,
+            14.512
+          ]
+        ],
+        "forward_path": [
+          [
+            83.986,
+            14.512
+          ],
+          [
+            84.003,
+            14.526
+          ],
+          [
+            84.021,
+            14.538
+          ],
+          [
+            84.037,
+            14.549
+          ]
+        ]
+      },
+      "charts": {
+        "spill_area_trend": {
+          "labels": [
+            "-31H",
+            "-20H",
+            "-10H",
+            "-4H",
+            "NOW"
+          ],
+          "values": [
+            1.8,
+            3.2,
+            4.6,
+            5.5,
+            6.31
+          ]
+        },
+        "drift_speed_trend": {
+          "labels": [
+            "-31H",
+            "-20H",
+            "-10H",
+            "-4H",
+            "NOW"
+          ],
+          "values": [
+            0.7,
+            0.8,
+            0.9,
+            1.0,
+            1.1
+          ]
+        }
+      },
+      "vessels": [
+        {
+          "id": "V-101",
+          "name": "MV BENGAL EXPLORER",
+          "mmsi": "419112230",
+          "type": "OIL TANKER",
+          "lat": 14.481,
+          "lon": 83.952,
+          "speed_knots": 8.6,
+          "course_deg": 41,
+          "distance_from_spill_km": 4.9,
+          "distance_from_origin_km": 1.5,
+          "risk_level": "MEDIUM",
+          "time_correlation": 66,
+          "trajectory_match": 60,
+          "ais_anomaly": "GAP: 22 MIN NEAR ORIGIN",
+          "suspicion_score": 62,
+          "trajectory": [
+            [
+              83.6613,
+              14.1565
+            ],
+            [
+              83.7581,
+              14.2647
+            ],
+            [
+              83.855,
+              14.3729
+            ],
+            [
+              83.952,
+              14.481
+            ]
+          ]
+        },
+        {
+          "id": "V-102",
+          "name": "MV GOLDEN DELTA",
+          "mmsi": "563009812",
+          "type": "BULK CARRIER",
+          "lat": 14.56,
+          "lon": 84.052,
+          "speed_knots": 13.5,
+          "course_deg": 255,
+          "distance_from_spill_km": 9.8,
+          "distance_from_origin_km": 15.6,
+          "risk_level": "LOW",
+          "time_correlation": 17,
+          "trajectory_match": 14,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 19,
+          "trajectory": [
+            [
+              84.7257,
+              14.7336
+            ],
+            [
+              84.501,
+              14.676
+            ],
+            [
+              84.2765,
+              14.6181
+            ],
+            [
+              84.052,
+              14.56
+            ]
+          ]
+        },
+        {
+          "id": "V-103",
+          "name": "MV EASTERN GLORY",
+          "mmsi": "412114567",
+          "type": "PRODUCT TANKER",
+          "lat": 14.498,
+          "lon": 84.019,
+          "speed_knots": 5.9,
+          "course_deg": 302,
+          "distance_from_spill_km": 3.4,
+          "distance_from_origin_km": 8.2,
+          "risk_level": "MEDIUM",
+          "time_correlation": 48,
+          "trajectory_match": 44,
+          "ais_anomaly": "SPEED DROP AT 19:52 UTC",
+          "suspicion_score": 46,
+          "trajectory": [
+            [
+              84.277,
+              14.3416
+            ],
+            [
+              84.1911,
+              14.3938
+            ],
+            [
+              84.1051,
+              14.4459
+            ],
+            [
+              84.019,
+              14.498
+            ]
+          ]
+        },
+        {
+          "id": "V-104",
+          "name": "MV SILVER TIDE",
+          "mmsi": "477115320",
+          "type": "FISHING VESSEL",
+          "lat": 14.54,
+          "lon": 83.912,
+          "speed_knots": 4.1,
+          "course_deg": 190,
+          "distance_from_spill_km": 8.1,
+          "distance_from_origin_km": 5.9,
+          "risk_level": "LOW",
+          "time_correlation": 11,
+          "trajectory_match": 8,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 12,
+          "trajectory": [
+            [
+              83.9488,
+              14.7417
+            ],
+            [
+              83.9365,
+              14.6745
+            ],
+            [
+              83.9243,
+              14.6072
+            ],
+            [
+              83.912,
+              14.54
+            ]
+          ]
+        },
+        {
+          "id": "V-105",
+          "name": "MV COROMANDEL STAR",
+          "mmsi": "419117754",
+          "type": "GENERAL CARGO",
+          "lat": 14.445,
+          "lon": 83.998,
+          "speed_knots": 16.3,
+          "course_deg": 12,
+          "distance_from_spill_km": 7.5,
+          "distance_from_origin_km": 9.1,
+          "risk_level": "LOW",
+          "time_correlation": 9,
+          "trajectory_match": 7,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 10,
+          "trajectory": [
+            [
+              83.8238,
+              13.6483
+            ],
+            [
+              83.8817,
+              13.9139
+            ],
+            [
+              83.9398,
+              14.1794
+            ],
+            [
+              83.998,
+              14.445
+            ]
+          ]
+        },
+        {
+          "id": "V-106",
+          "name": "MV VISHAKHA PIONEER",
+          "mmsi": "422119043",
+          "type": "CHEMICAL TANKER",
+          "lat": 14.529,
+          "lon": 84.001,
+          "speed_knots": 2.8,
+          "course_deg": 79,
+          "distance_from_spill_km": 2.1,
+          "distance_from_origin_km": 10.4,
+          "risk_level": "MEDIUM",
+          "time_correlation": 39,
+          "trajectory_match": 35,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 38,
+          "trajectory": [
+            [
+              83.8591,
+              14.5023
+            ],
+            [
+              83.9064,
+              14.5112
+            ],
+            [
+              83.9537,
+              14.5201
+            ],
+            [
+              84.001,
+              14.529
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "OS-2026-003",
+      "region": "INDIAN OCEAN",
+      "priority": "HIGH",
+      "status": "ACTIVE INVESTIGATION",
+      "detection_time": "05 SEP 2026 - 03:26 UTC",
+      "last_analysis": "05 SEP 2026 - 13:50 UTC",
+      "coordinates": {
+        "lat": 4.512,
+        "lon": 77.968
+      },
+      "statistics": {
+        "spill_area_km2": 21.47,
+        "detection_confidence": 97.1,
+        "spill_age_hours": 10,
+        "risk_level": "HIGH",
+        "nearby_vessels": 9,
+        "top_suspect_score": 91
+      },
+      "satellite": {
+        "platform": "SENTINEL-1",
+        "sensor": "SAR (C-BAND)",
+        "acquisition_time": "05 SEP 2026 - 03:04 UTC",
+        "resolution": "10m x 10m",
+        "image": "/static/images/satellite-spill-3.png",
+        "segmentation_image": "/static/images/976.png"
+      },
+      "case_details": {
+        "location": "INDIAN OCEAN, 320KM SOUTHWEST OF SRI LANKA",
+        "coordinates": "4.512 N, 77.968 E",
+        "detection_time": "05 SEP 2026 - 03:26 UTC",
+        "spill_age": "10 HOURS",
+        "spill_area": "21.47 KM\u00b2",
+        "wind_speed": "21.4 KM/H, SW",
+        "ocean_current": "0.9 M/S, NW",
+        "drift_speed": "2.6 KM/H",
+        "analysis_status": "SEGMENTATION COMPLETE"
+      },
+      "spill_geometry": {
+        "total_area_km2": 21.47,
+        "perimeter_km": 28.9,
+        "max_length_km": 9.1,
+        "max_width_km": 3.1,
+        "centroid": {
+          "lat": 4.512,
+          "lon": 77.968
+        },
+        "polygon": [
+          [
+            77.912,
+            4.548
+          ],
+          [
+            77.936,
+            4.559
+          ],
+          [
+            77.961,
+            4.552
+          ],
+          [
+            77.986,
+            4.538
+          ],
+          [
+            78.001,
+            4.518
+          ],
+          [
+            77.994,
+            4.497
+          ],
+          [
+            77.972,
+            4.483
+          ],
+          [
+            77.947,
+            4.481
+          ],
+          [
+            77.926,
+            4.494
+          ],
+          [
+            77.91,
+            4.518
+          ],
+          [
+            77.912,
+            4.548
+          ]
+        ]
+      },
+      "drift": {
+        "estimated_origin": {
+          "lat": 4.601,
+          "lon": 78.041,
+          "time": "04 SEP 2026 - 17:15 UTC"
+        },
+        "current_location": {
+          "lat": 4.512,
+          "lon": 77.968,
+          "time": "05 SEP 2026 - 03:26 UTC"
+        },
+        "forecast_24h": {
+          "lat": 4.398,
+          "lon": 77.872,
+          "time": "06 SEP 2026 - 03:26 UTC"
+        },
+        "backward_path": [
+          [
+            78.041,
+            4.601
+          ],
+          [
+            78.018,
+            4.573
+          ],
+          [
+            77.994,
+            4.542
+          ],
+          [
+            77.968,
+            4.512
+          ]
+        ],
+        "forward_path": [
+          [
+            77.968,
+            4.512
+          ],
+          [
+            77.938,
+            4.478
+          ],
+          [
+            77.906,
+            4.442
+          ],
+          [
+            77.872,
+            4.398
+          ]
+        ]
+      },
+      "charts": {
+        "spill_area_trend": {
+          "labels": [
+            "-10H",
+            "-7H",
+            "-4H",
+            "-2H",
+            "NOW"
+          ],
+          "values": [
+            7.2,
+            11.9,
+            16.4,
+            19.1,
+            21.47
+          ]
+        },
+        "drift_speed_trend": {
+          "labels": [
+            "-10H",
+            "-7H",
+            "-4H",
+            "-2H",
+            "NOW"
+          ],
+          "values": [
+            1.9,
+            2.1,
+            2.3,
+            2.5,
+            2.6
+          ]
+        }
+      },
+      "vessels": [
+        {
+          "id": "V-201",
+          "name": "MV INDIAN CRUSADER",
+          "mmsi": "419221109",
+          "type": "VLCC OIL TANKER",
+          "lat": 4.588,
+          "lon": 78.028,
+          "speed_knots": 11.1,
+          "course_deg": 231,
+          "distance_from_spill_km": 2.3,
+          "distance_from_origin_km": 0.6,
+          "risk_level": "HIGH",
+          "time_correlation": 98,
+          "trajectory_match": 95,
+          "ais_anomaly": "AIS OFF FOR 68 MIN",
+          "suspicion_score": 91,
+          "trajectory": [
+            [
+              78.4606,
+              4.9369
+            ],
+            [
+              78.3164,
+              4.8206
+            ],
+            [
+              78.1722,
+              4.7043
+            ],
+            [
+              78.028,
+              4.588
+            ]
+          ]
+        },
+        {
+          "id": "V-202",
+          "name": "MV MONSOON VOYAGER",
+          "mmsi": "412226531",
+          "type": "CHEMICAL TANKER",
+          "lat": 4.556,
+          "lon": 77.901,
+          "speed_knots": 9.8,
+          "course_deg": 104,
+          "distance_from_spill_km": 6.9,
+          "distance_from_origin_km": 15.3,
+          "risk_level": "MEDIUM",
+          "time_correlation": 55,
+          "trajectory_match": 51,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 53,
+          "trajectory": [
+            [
+              77.4243,
+              4.6743
+            ],
+            [
+              77.5832,
+              4.6349
+            ],
+            [
+              77.7421,
+              4.5955
+            ],
+            [
+              77.901,
+              4.556
+            ]
+          ]
+        },
+        {
+          "id": "V-203",
+          "name": "MV CEYLON MARINER",
+          "mmsi": "422231987",
+          "type": "PRODUCT TANKER",
+          "lat": 4.47,
+          "lon": 77.999,
+          "speed_knots": 6.3,
+          "course_deg": 348,
+          "distance_from_spill_km": 4.7,
+          "distance_from_origin_km": 12.1,
+          "risk_level": "MEDIUM",
+          "time_correlation": 41,
+          "trajectory_match": 38,
+          "ais_anomaly": "SPEED DROP AT 01:12 UTC",
+          "suspicion_score": 44,
+          "trajectory": [
+            [
+              78.0646,
+              4.1621
+            ],
+            [
+              78.0428,
+              4.2647
+            ],
+            [
+              78.0209,
+              4.3674
+            ],
+            [
+              77.999,
+              4.47
+            ]
+          ]
+        },
+        {
+          "id": "V-204",
+          "name": "MV MALABAR EAGLE",
+          "mmsi": "563234410",
+          "type": "BULK CARRIER",
+          "lat": 4.641,
+          "lon": 77.902,
+          "speed_knots": 15.6,
+          "course_deg": 189,
+          "distance_from_spill_km": 18.2,
+          "distance_from_origin_km": 20.4,
+          "risk_level": "LOW",
+          "time_correlation": 14,
+          "trajectory_match": 10,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 16,
+          "trajectory": [
+            [
+              78.0245,
+              5.4109
+            ],
+            [
+              77.9836,
+              5.1542
+            ],
+            [
+              77.9428,
+              4.8976
+            ],
+            [
+              77.902,
+              4.641
+            ]
+          ]
+        },
+        {
+          "id": "V-205",
+          "name": "MV SOUTHERN LIGHT",
+          "mmsi": "477238845",
+          "type": "FISHING VESSEL",
+          "lat": 4.489,
+          "lon": 77.921,
+          "speed_knots": 3.9,
+          "course_deg": 66,
+          "distance_from_spill_km": 6.1,
+          "distance_from_origin_km": 14.7,
+          "risk_level": "LOW",
+          "time_correlation": 9,
+          "trajectory_match": 7,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 11,
+          "trajectory": [
+            [
+              77.7425,
+              4.4097
+            ],
+            [
+              77.802,
+              4.4362
+            ],
+            [
+              77.8615,
+              4.4626
+            ],
+            [
+              77.921,
+              4.489
+            ]
+          ]
+        },
+        {
+          "id": "V-206",
+          "name": "MV DEEP PACIFIC",
+          "mmsi": "419241023",
+          "type": "OIL TANKER",
+          "lat": 4.598,
+          "lon": 77.951,
+          "speed_knots": 2.1,
+          "course_deg": 152,
+          "distance_from_spill_km": 8.4,
+          "distance_from_origin_km": 6.7,
+          "risk_level": "MEDIUM",
+          "time_correlation": 58,
+          "trajectory_match": 47,
+          "ais_anomaly": "GAP: 15 MIN",
+          "suspicion_score": 49,
+          "trajectory": [
+            [
+              77.9016,
+              4.6906
+            ],
+            [
+              77.9181,
+              4.6598
+            ],
+            [
+              77.9345,
+              4.6289
+            ],
+            [
+              77.951,
+              4.598
+            ]
+          ]
+        },
+        {
+          "id": "V-207",
+          "name": "MV HORIZON TRADER",
+          "mmsi": "412244678",
+          "type": "GENERAL CARGO",
+          "lat": 4.402,
+          "lon": 77.933,
+          "speed_knots": 17.4,
+          "course_deg": 24,
+          "distance_from_spill_km": 14.6,
+          "distance_from_origin_km": 22.8,
+          "risk_level": "LOW",
+          "time_correlation": 6,
+          "trajectory_match": 4,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 7,
+          "trajectory": [
+            [
+              77.5787,
+              3.6077
+            ],
+            [
+              77.6967,
+              3.8725
+            ],
+            [
+              77.8148,
+              4.1372
+            ],
+            [
+              77.933,
+              4.402
+            ]
+          ]
+        },
+        {
+          "id": "V-208",
+          "name": "MV ARABIAN CREST",
+          "mmsi": "422249901",
+          "type": "PRODUCT TANKER",
+          "lat": 4.533,
+          "lon": 78.061,
+          "speed_knots": 10.2,
+          "course_deg": 267,
+          "distance_from_spill_km": 10.5,
+          "distance_from_origin_km": 4.3,
+          "risk_level": "MEDIUM",
+          "time_correlation": 62,
+          "trajectory_match": 56,
+          "ais_anomaly": "COURSE CHANGE AT 02:30 UTC",
+          "suspicion_score": 58,
+          "trajectory": [
+            [
+              78.5716,
+              4.5595
+            ],
+            [
+              78.4014,
+              4.5507
+            ],
+            [
+              78.2312,
+              4.5419
+            ],
+            [
+              78.061,
+              4.533
+            ]
+          ]
+        },
+        {
+          "id": "V-209",
+          "name": "MV NAUTICAL PRIDE",
+          "mmsi": "563252217",
+          "type": "CONTAINER SHIP",
+          "lat": 4.451,
+          "lon": 77.889,
+          "speed_knots": 19.8,
+          "course_deg": 337,
+          "distance_from_spill_km": 12.9,
+          "distance_from_origin_km": 19.6,
+          "risk_level": "LOW",
+          "time_correlation": 5,
+          "trajectory_match": 3,
+          "ais_anomaly": "NONE DETECTED",
+          "suspicion_score": 6,
+          "trajectory": [
+            [
+              78.2763,
+              3.5402
+            ],
+            [
+              78.1473,
+              3.8438
+            ],
+            [
+              78.0182,
+              4.1474
+            ],
+            [
+              77.889,
+              4.451
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}
