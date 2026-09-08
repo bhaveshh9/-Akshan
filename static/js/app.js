@@ -45,12 +45,65 @@ async function init() {
   document.getElementById('case-next').addEventListener('click', () => shiftCase(1));
 
   initImageModal();
+  initSidebarNav();
 
   await loadCases();
 
   if (state.cases.length > 0) {
     await loadCase(state.cases[0].case_id);
   }
+}
+
+/* ---------------------------------------------------------
+   SIDEBAR NAVIGATION
+   This is a single-page dashboard, so "navigating" means smooth-scrolling
+   to the matching section already on the page (rather than routing to a
+   separate page) plus toggling which nav item is highlighted active.
+   Items without a distinct section of their own reuse the closest existing
+   one instead of inventing new UI:
+     - "cases"       -> the case switcher in the header
+     - "ais"         -> the map (where AIS vessel markers render)
+     - "reports"     -> the existing satellite-imagery / download-report modal
+     - "settings"    -> no settings feature exists yet, so it just highlights
+   --------------------------------------------------------- */
+
+function initSidebarNav() {
+  const sectionResolvers = {
+    cases: () => document.querySelector('.case-switcher'),
+    satellite: () => document.getElementById('satellite-panel'),
+    drift: () => document.getElementById('drift-panel'),
+    attribution: () => document.getElementById('attribution-panel'),
+    ais: () => document.querySelector('.map-card'),
+  };
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+
+      const key = item.dataset.nav;
+
+      if (key === 'dashboard') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      if (key === 'reports') {
+        openImageModal();
+        return;
+      }
+
+      const resolver = sectionResolvers[key];
+      const target = resolver && resolver();
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      // "settings" (and any other unmapped item) simply gets highlighted --
+      // no matching section/feature exists yet in this prototype.
+    });
+  });
 }
 
 /* ---------------------------------------------------------
@@ -307,24 +360,30 @@ function updateVesselTable() {
   const suspects = state.suspects.suspects;
 
   tbody.innerHTML = suspects.map(s => {
-    // Badge color is driven by RANK POSITION (investigative priority tier),
-    // not the raw suspicion score, per the updated attribution UX:
+    // Badge/row color is driven by RANK POSITION (investigative priority
+    // tier), not the raw suspicion score, per the updated attribution UX:
     //   Rank 1        -> red    (Highly Possible)
     //   Rank 2-3      -> yellow (Moderately Possible)
     //   Rank 4-5      -> blue   (Less Likely)
     //   Rank 6+       -> default/normal styling (Very Low Likelihood)
-    let scoreClass;
+    // rowClass tints the entire <tr> with a light shade of the same tier
+    // color; scoreClass keeps the existing % badge color as before.
+    let scoreClass, rowClass;
     if (s.rank === 1) {
       scoreClass = 'score-high';
+      rowClass = 'row-high';
     } else if (s.rank === 2 || s.rank === 3) {
       scoreClass = 'score-medium';
+      rowClass = 'row-medium';
     } else if (s.rank === 4 || s.rank === 5) {
       scoreClass = 'score-info';
+      rowClass = 'row-info';
     } else {
       scoreClass = '';
+      rowClass = '';
     }
     return `
-      <tr>
+      <tr class="${rowClass}">
         <td class="suspect-rank">${s.rank}</td>
         <td class="suspect-name">${s.name}</td>
         <td>${s.mmsi}</td>
@@ -402,9 +461,25 @@ function updateMap() {
 
   if (!state.map) {
     state.map = L.map('main-map', { zoomControl: false, attributionControl: true });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+    // Esri Ocean basemap: unlike plain OSM tiles (flat solid blue far from
+    // any coastline), this renders bathymetry contours, seafloor shading,
+    // and ocean/sea name labels, so the map still reads as an actual chart
+    // at zoom levels where the investigation area is fully mid-ocean.
+    // maxNativeZoom caps the native tile fetch (Esri's ocean service tops
+    // out at 13) while maxZoom lets Leaflet keep zooming in past that by
+    // upscaling the last available tile, so tight-cluster zoom-ins still work.
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 18,
-      attribution: '&copy; OpenStreetMap contributors',
+      maxNativeZoom: 13,
+      attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
+    }).addTo(state.map);
+
+    // Companion reference layer: adds depth-contour lines and ocean/coast
+    // name labels on top of the base imagery.
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Reference/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 18,
+      maxNativeZoom: 13,
     }).addTo(state.map);
 
     document.getElementById('map-zoom-in').addEventListener('click', () => state.map.zoomIn());

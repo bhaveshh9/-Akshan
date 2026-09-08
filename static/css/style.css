@@ -196,6 +196,16 @@ button { font-family: inherit; cursor: pointer; }
 
 .main-content { flex: 1; padding: 24px 28px 40px; min-width: 0; }
 
+/* Sidebar nav-link targets: offset so the section lands below the sticky
+   top bar instead of being tucked under it when scrolled into view. */
+#satellite-panel,
+#drift-panel,
+#attribution-panel,
+.case-switcher,
+.map-card {
+  scroll-margin-top: calc(var(--topnav-h) + 16px);
+}
+
 /* ---- Dashboard header / hero with waves ---- */
 
 .dash-header {
@@ -627,7 +637,16 @@ button { font-family: inherit; cursor: pointer; }
 }
 .score-high { background: var(--c-red-bg); color: var(--c-red); }
 .score-medium { background: var(--c-amber-bg); color: var(--c-amber); }
+.score-info { background: rgba(29,111,165,0.12); color: var(--c-ocean); }
 .score-low { background: rgba(31,157,99,0.12); color: var(--c-green); }
+
+.suspect-table tbody tr.row-high { background: rgba(209,55,47,0.06); }
+.suspect-table tbody tr.row-medium { background: rgba(217,140,31,0.06); }
+.suspect-table tbody tr.row-info { background: rgba(29,111,165,0.06); }
+
+.suspect-table tbody tr.row-high:hover { background: rgba(209,55,47,0.11); }
+.suspect-table tbody tr.row-medium:hover { background: rgba(217,140,31,0.11); }
+.suspect-table tbody tr.row-info:hover { background: rgba(29,111,165,0.11); }
 
 .probability-box {
   border: 1px solid var(--c-border);
