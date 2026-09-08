@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Akshan— Oil Spill Intelligence Dashboard</title>
+<title>Marine Sentinel — Oil Spill Intelligence Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -34,7 +34,7 @@
       </svg>
     </div>
     <div class="brand-text">
-      <span class="brand-title">Akshan</span>
+      <span class="brand-title">MARINE SENTINEL</span>
       <span class="brand-subtitle">AI-Powered Marine Monitoring</span>
     </div>
   </div>
@@ -146,8 +146,9 @@
           <div class="analysis-card-head">
             <span>Original Sentinel-1 SAR Image</span>
           </div>
-          <div class="image-frame">
+          <div class="image-frame image-frame-clickable" id="sar-image-frame" tabindex="0" role="button" aria-label="Expand original SAR image">
             <img id="sar-image" src="" alt="Sentinel-1 SAR satellite image of ocean surface">
+            <div class="image-expand-hint">⤢ Click to Expand</div>
           </div>
           <dl class="meta-list">
             <div><dt>Platform</dt><dd id="meta-platform">—</dd></div>
@@ -163,8 +164,9 @@
             <span>AI Segmentation Result</span>
             <span class="confidence-pill" id="confidence-pill">—</span>
           </div>
-          <div class="image-frame">
+          <div class="image-frame image-frame-clickable" id="seg-image-frame" tabindex="0" role="button" aria-label="Expand AI segmentation image">
             <img id="seg-image" src="" alt="AI segmentation of detected oil spill">
+            <div class="image-expand-hint">⤢ Click to Expand</div>
           </div>
           <div class="seg-legend">
             <span><i class="dot dot-red"></i> Detected Spill</span>
@@ -185,6 +187,7 @@
               <button id="map-reset" class="map-ctrl-btn" aria-label="Reset view">⟲</button>
               <button id="map-fullscreen" class="map-ctrl-btn" aria-label="Fullscreen">⛶</button>
             </div>
+            <div class="map-locator" id="map-locator" aria-label="Regional locator map showing nearby coastline"></div>
             <div class="map-legend">
               <div class="legend-title">Map Legend</div>
               <div><span class="legend-swatch swatch-spill-fill"></span>Detected Oil Spill</div>
@@ -330,7 +333,7 @@
     </section>
 
     <footer class="app-footer">
-      <span>Akshan — Hackathon Prototype</span>
+      <span>MARINE SENTINEL — Hackathon Prototype · Dummy Data For Demonstration Purposes Only</span>
     </footer>
   </main>
 </div>
@@ -350,8 +353,39 @@
   </div>
 </template>
 
+<!-- Image Lightbox / Download Report Modal -->
+<div class="image-modal-backdrop" id="image-modal-backdrop" aria-hidden="true">
+  <div class="image-modal">
+    <button class="image-modal-close" id="image-modal-close" aria-label="Close">✕</button>
+    <div class="image-modal-header">
+      <div>
+        <h3 id="modal-title">—</h3>
+        <p id="modal-subtitle" class="panel-subtitle">Spill Detection &amp; Spatial Analysis</p>
+      </div>
+      <button class="btn-download-report" id="download-report-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M6 11l6 6 6-6"/><path d="M4 21h16"/></svg>
+        Download Report
+      </button>
+    </div>
+    <div class="image-modal-body">
+      <div class="image-modal-imgs">
+        <figure>
+          <img id="modal-sar-image" src="" alt="Raw Sentinel-1 SAR image">
+          <figcaption>Original Sentinel-1 SAR Image</figcaption>
+        </figure>
+        <figure>
+          <img id="modal-seg-image" src="" alt="AI segmentation result">
+          <figcaption>AI Segmentation Result</figcaption>
+        </figure>
+      </div>
+      <dl class="meta-list modal-meta-list" id="modal-meta-list"><!-- injected by JS --></dl>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

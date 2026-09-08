@@ -10,6 +10,8 @@ const state = {
   vessels: [],
   suspects: null,
   map: null,
+  locatorMap: null,       // small inset map showing regional/coastline context
+  locatorMarker: null,
   layers: {
     spillPolygon: null,
     originZone: null,
@@ -41,6 +43,8 @@ document.addEventListener('DOMContentLoaded', init);
 async function init() {
   document.getElementById('case-prev').addEventListener('click', () => shiftCase(-1));
   document.getElementById('case-next').addEventListener('click', () => shiftCase(1));
+
+  initImageModal();
 
   await loadCases();
 
@@ -303,7 +307,22 @@ function updateVesselTable() {
   const suspects = state.suspects.suspects;
 
   tbody.innerHTML = suspects.map(s => {
-    const scoreClass = s.suspicion_score >= 70 ? 'score-high' : (s.suspicion_score >= 40 ? 'score-medium' : 'score-low');
+    // Badge color is driven by RANK POSITION (investigative priority tier),
+    // not the raw suspicion score, per the updated attribution UX:
+    //   Rank 1        -> red    (Highly Possible)
+    //   Rank 2-3      -> yellow (Moderately Possible)
+    //   Rank 4-5      -> blue   (Less Likely)
+    //   Rank 6+       -> default/normal styling (Very Low Likelihood)
+    let scoreClass;
+    if (s.rank === 1) {
+      scoreClass = 'score-high';
+    } else if (s.rank === 2 || s.rank === 3) {
+      scoreClass = 'score-medium';
+    } else if (s.rank === 4 || s.rank === 5) {
+      scoreClass = 'score-info';
+    } else {
+      scoreClass = '';
+    }
     return `
       <tr>
         <td class="suspect-rank">${s.rank}</td>
@@ -502,6 +521,11 @@ function updateMap() {
   });
 
   fitInvestigationBounds();
+
+  // Regional locator inset — gives coastline/country context so the main
+  // map doesn't read as an undifferentiated block of blue, without touching
+  // the main map's own tight zoom on the spill itself.
+  updateLocatorMap();
 }
 
 function bearingBetween(lat1, lon1, lat2, lon2) {
@@ -582,6 +606,302 @@ function toggleMapFullscreen() {
     document.exitFullscreen?.();
   }
   setTimeout(() => state.map && state.map.invalidateSize(), 250);
+}
+
+/* ---------------------------------------------------------
+   REGIONAL LOCATOR MINI-MAP
+   Renders into the existing #map-locator inset (bottom-left of the main
+   map). It is a separate, static (non-interactive) Leaflet instance kept
+   zoomed out relative to the main map so nearby coastline is visible,
+   confirming the monitored region is genuinely open ocean.
+   --------------------------------------------------------- */
+
+function updateLocatorMap() {
+  const c = state.activeCase;
+  if (!c) return;
+
+  const lat = c.spill_geometry.centroid.lat;
+  const lon = c.spill_geometry.centroid.lon;
+
+  if (!state.locatorMap) {
+    state.locatorMap = L.map('map-locator', {
+      zoomControl: false,
+      attributionControl: false,
+      dragging: false,
+      scrollWheelZoom: false,
+      doubleClickZoom: false,
+      boxZoom: false,
+      keyboard: false,
+      touchZoom: false,
+      tap: false,
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 10,
+    }).addTo(state.locatorMap);
+
+    state.locatorMarker = L.circleMarker([lat, lon], {
+      radius: 6,
+      color: '#ffffff',
+      weight: 2,
+      fillColor: '#d1372f',
+      fillOpacity: 1,
+    }).addTo(state.locatorMap).bindTooltip('MONITORED REGION', { direction: 'top' });
+  } else {
+    state.locatorMarker.setLatLng([lat, lon]);
+  }
+
+  // Zoom level chosen to reveal the nearest coastline/landmass while still
+  // keeping the monitored ocean area centered and legible.
+  state.locatorMap.setView([lat, lon], 6);
+
+  // The inset can initialize while hidden/mid-layout, so re-measure shortly after.
+  setTimeout(() => state.locatorMap && state.locatorMap.invalidateSize(), 200);
+}
+
+/* ---------------------------------------------------------
+   IMAGE LIGHTBOX MODAL + PDF REPORT DOWNLOAD
+   --------------------------------------------------------- */
+
+function initImageModal() {
+  const backdrop = document.getElementById('image-modal-backdrop');
+  const closeBtn = document.getElementById('image-modal-close');
+  const sarFrame = document.getElementById('sar-image-frame');
+  const segFrame = document.getElementById('seg-image-frame');
+  const downloadBtn = document.getElementById('download-report-btn');
+
+  const openHandler = () => openImageModal();
+  const keyOpenHandler = e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openHandler();
+    }
+  };
+
+  sarFrame.addEventListener('click', openHandler);
+  sarFrame.addEventListener('keydown', keyOpenHandler);
+  segFrame.addEventListener('click', openHandler);
+  segFrame.addEventListener('keydown', keyOpenHandler);
+
+  closeBtn.addEventListener('click', closeImageModal);
+  backdrop.addEventListener('click', e => {
+    if (e.target === backdrop) closeImageModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && backdrop.classList.contains('open')) closeImageModal();
+  });
+
+  downloadBtn.addEventListener('click', generatePDFReport);
+}
+
+function openImageModal() {
+  const c = state.activeCase;
+  if (!c) return;
+
+  document.getElementById('modal-title').textContent = `${c.case_id} — Satellite Imagery`;
+  document.getElementById('modal-sar-image').src = c.satellite.image;
+  document.getElementById('modal-seg-image').src = c.satellite.segmentation_image;
+
+  const metaList = document.getElementById('modal-meta-list');
+  const rows = [
+    ['Platform', c.satellite.platform],
+    ['Sensor', c.satellite.sensor],
+    ['Acquisition', c.satellite.acquisition_time],
+    ['Resolution', c.satellite.resolution],
+    ['Detection Confidence', `${c.statistics.detection_confidence.toFixed(1)}%`],
+    ['Spill Area', `${c.statistics.spill_area_km2.toFixed(2)} KM²`],
+    ['Risk Level', c.statistics.risk_level],
+    ['Estimated Spill Age', `${c.statistics.spill_age_hours} HOURS`],
+  ];
+  metaList.innerHTML = rows.map(([label, value]) => `
+    <div><dt>${label}</dt><dd>${value}</dd></div>
+  `).join('');
+
+  const backdrop = document.getElementById('image-modal-backdrop');
+  backdrop.classList.add('open');
+  backdrop.setAttribute('aria-hidden', 'false');
+}
+
+function closeImageModal() {
+  const backdrop = document.getElementById('image-modal-backdrop');
+  backdrop.classList.remove('open');
+  backdrop.setAttribute('aria-hidden', 'true');
+}
+
+/**
+ * Loads an image URL into a canvas and returns a base64 JPEG data URL,
+ * so it can be embedded into the jsPDF document (jsPDF cannot address
+ * remote image URLs directly).
+ */
+function loadImageAsDataURL(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        resolve({
+          dataUrl: canvas.toDataURL('image/jpeg', 0.92),
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+        });
+      } catch (err) {
+        reject(err);
+      }
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+async function generatePDFReport() {
+  const btn = document.getElementById('download-report-btn');
+  if (!state.activeCase) return;
+
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    let y = margin;
+
+    const c = state.activeCase;
+    const s = c.statistics;
+
+    // ---- Header band ----
+    doc.setFillColor(10, 37, 64);
+    doc.rect(0, 0, pageWidth, 24, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text('MARINE SENTINEL', margin, 14);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text('Oil Spill Intelligence Report', margin, 20);
+
+    y = 32;
+    doc.setTextColor(20, 40, 59);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text(`Case ${c.case_id} — ${c.case_details.location}`, margin, y);
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(91, 113, 133);
+    doc.text(`Report generated: ${new Date().toLocaleString()}`, margin, y);
+    y += 9;
+
+    // ---- Spill image ----
+    try {
+      const img = await loadImageAsDataURL(c.satellite.image);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10.5);
+      doc.setTextColor(20, 40, 59);
+      doc.text('Detected Oil Spill — Satellite Image', margin, y);
+      y += 4;
+
+      const imgW = pageWidth - margin * 2;
+      const imgH = Math.min(85, imgW * (img.height / img.width));
+      doc.addImage(img.dataUrl, 'JPEG', margin, y, imgW, imgH);
+      y += imgH + 9;
+    } catch (err) {
+      console.warn('Could not embed spill image in report:', err);
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(9);
+      doc.setTextColor(150, 160, 170);
+      doc.text('(Satellite image unavailable for embedding)', margin, y);
+      y += 9;
+    }
+
+    if (y > pageHeight - 80) { doc.addPage(); y = margin; }
+
+    // ---- Basic spill information ----
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(20, 40, 59);
+    doc.text('Spill Information', margin, y);
+    y += 6;
+
+    const infoRows = [
+      ['Coordinates', c.case_details.coordinates],
+      ['Detection Time', c.case_details.detection_time],
+      ['Estimated Spill Age', c.case_details.spill_age],
+      ['Spill Area', c.case_details.spill_area],
+      ['Detection Confidence', `${s.detection_confidence.toFixed(1)}%`],
+      ['Risk Level', s.risk_level],
+      ['Wind Speed', c.case_details.wind_speed],
+      ['Ocean Current', c.case_details.ocean_current],
+      ['Drift Speed', c.case_details.drift_speed],
+      ['Nearby Vessels', String(s.nearby_vessels)],
+    ];
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9.5);
+    infoRows.forEach(([label, value]) => {
+      if (y > pageHeight - 20) { doc.addPage(); y = margin; }
+      doc.setTextColor(91, 113, 133);
+      doc.text(`${label}:`, margin, y);
+      doc.setTextColor(20, 40, 59);
+      doc.text(String(value), margin + 48, y);
+      y += 6;
+    });
+
+    y += 4;
+    if (y > pageHeight - 60) { doc.addPage(); y = margin; }
+
+    // ---- Preliminary assessment (dummy description) ----
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(20, 40, 59);
+    doc.text('Preliminary Assessment', margin, y);
+    y += 6;
+
+    const description = 'A potential oil spill has been detected in the monitored ocean region. The system has identified the affected area and generated a preliminary analysis. Further investigation is recommended to verify the spill and identify potential responsible vessels.';
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9.5);
+    doc.setTextColor(20, 40, 59);
+    const lines = doc.splitTextToSize(description, pageWidth - margin * 2);
+    doc.text(lines, margin, y);
+    y += lines.length * 5 + 7;
+
+    // ---- Top suspect (if available) ----
+    if (state.suspects && state.suspects.top_suspect) {
+      if (y > pageHeight - 30) { doc.addPage(); y = margin; }
+      const top = state.suspects.top_suspect;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(20, 40, 59);
+      doc.text('Top Suspect Vessel', margin, y);
+      y += 6;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9.5);
+      doc.text(`${top.name} — Suspicion Score: ${top.suspicion_score}%`, margin, y);
+      y += 6;
+    }
+
+    // ---- Footer disclaimer ----
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(150, 160, 170);
+    doc.text('Marine Sentinel — Hackathon Prototype. Dummy data for demonstration purposes only.', margin, pageHeight - 10);
+
+    doc.save(`${c.case_id}_oil_spill_report.pdf`);
+  } catch (err) {
+    console.error('Failed to generate PDF report:', err);
+    alert('Something went wrong while generating the report. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+  }
 }
 
 /* ---------------------------------------------------------

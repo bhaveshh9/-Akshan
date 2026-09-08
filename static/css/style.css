@@ -85,11 +85,7 @@ button { font-family: inherit; cursor: pointer; }
   padding: 0 24px;
   position: sticky;
   top: 0;
-  /* Raised from 100 -> 1000: Leaflet's internal panes (tile/marker/popup/
-     tooltip) can use z-index values up to ~650-700. Even with the
-     .map-wrapper isolation fix below, this is kept high as a defensive
-     second layer so the navbar always paints above any page content. */
-  z-index: 1000;
+  z-index: 100;
   overflow: hidden;
 }
 
@@ -169,10 +165,6 @@ button { font-family: inherit; cursor: pointer; }
   height: calc(100vh - var(--topnav-h));
   padding: 18px 12px;
   flex-shrink: 0;
-  /* NEW: sidebar is also position:sticky, so give it an explicit stacking
-     level — below the navbar, above ordinary main-content elements — to
-     keep scroll behavior predictable next to the map fix below. */
-  z-index: 10;
 }
 
 .sidebar-nav { display: flex; flex-direction: column; gap: 3px; }
@@ -412,6 +404,19 @@ button { font-family: inherit; cursor: pointer; }
 }
 .image-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+.image-frame-clickable { cursor: pointer; transition: box-shadow var(--t-fast); }
+.image-frame-clickable:hover, .image-frame-clickable:focus-visible { box-shadow: 0 0 0 2px var(--c-teal) inset; }
+.image-expand-hint {
+  position: absolute; bottom: 8px; right: 8px;
+  background: rgba(10, 37, 64, 0.72); color: var(--c-white);
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+  padding: 4px 9px; border-radius: 999px;
+  opacity: 0; transition: opacity var(--t-fast);
+  pointer-events: none;
+}
+.image-frame-clickable:hover .image-expand-hint,
+.image-frame-clickable:focus-visible .image-expand-hint { opacity: 1; }
+
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .seg-legend { display: flex; gap: 16px; font-size: 11px; color: var(--c-text-muted); flex-wrap: wrap; }
@@ -425,22 +430,7 @@ button { font-family: inherit; cursor: pointer; }
 .meta-list dd { margin: 2px 0 0; font-size: 12px; font-weight: 600; color: var(--c-navy); }
 
 .map-card { padding: 14px; }
-.map-wrapper {
-  position: relative;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  flex: 1;
-  min-height: 500px;
-  /* NEW: creates a fresh stacking context scoped to this element. Leaflet
-     assigns its own internal z-index values to tile/marker/popup/tooltip
-     panes (some as high as ~650-700). Without isolation, those values are
-     compared directly against page-level elements like the sticky navbar
-     (z-index: 1000) and sidebar, and on some browsers/scroll timings the
-     map layers would paint above the navbar. `isolation: isolate` caps
-     everything inside .map-wrapper so it can never escape above page
-     chrome, regardless of what z-index Leaflet uses internally. */
-  isolation: isolate;
-}
+.map-wrapper { position: relative; border-radius: var(--radius-sm); overflow: hidden; flex: 1; min-height: 500px; }
 #main-map { width: 100%; height: 100%; min-height: 500px; }
 
 .map-controls {
@@ -478,6 +468,18 @@ button { font-family: inherit; cursor: pointer; }
 .swatch-ship-high { background: var(--c-red); border-radius: 2px; }
 .swatch-ship-med { background: var(--c-amber); border-radius: 2px; }
 .swatch-ship-low { background: var(--c-ocean); border-radius: 2px; }
+
+/* Locator mini-map: gives regional/coastline context without disturbing the
+   main map's tight zoom on the spill itself. */
+.map-locator {
+  position: absolute; bottom: 12px; left: 12px; z-index: 500;
+  width: 150px; height: 118px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 2px solid var(--c-white);
+  box-shadow: var(--shadow-md);
+}
+.map-locator .leaflet-control-attribution { display: none; }
 
 /* Leaflet popup theming */
 .leaflet-popup-content-wrapper { border-radius: var(--radius-sm); box-shadow: var(--shadow-lg); }
@@ -520,6 +522,81 @@ button { font-family: inherit; cursor: pointer; }
 #geometry-svg { width: 100%; max-width: 260px; height: auto; }
 #geometry-svg polygon { fill: rgba(209,55,47,0.18); stroke: var(--c-red); stroke-width: 2; stroke-dasharray: 5 4; }
 #geometry-svg circle { fill: var(--c-red); }
+
+/* =========================================================
+   IMAGE LIGHTBOX / DOWNLOAD REPORT MODAL
+   ========================================================= */
+
+.image-modal-backdrop {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(10, 37, 64, 0.72);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+.image-modal-backdrop.open { display: flex; animation: fadeIn var(--t-med) ease; }
+
+.image-modal {
+  position: relative;
+  background: var(--c-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%; max-width: 920px;
+  max-height: 88vh; overflow-y: auto;
+  padding: 22px;
+  animation: fadeSlide var(--t-med) ease;
+}
+
+.image-modal-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--c-border); background: var(--c-white);
+  color: var(--c-text-muted); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.image-modal-close:hover { background: var(--c-light-blue); color: var(--c-ocean); }
+
+.image-modal-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 16px; padding-right: 36px; flex-wrap: wrap;
+}
+.image-modal-header h3 {
+  font-size: 15px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--c-navy);
+}
+
+.btn-download-report {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--c-teal); color: var(--c-white);
+  border: none; padding: 10px 16px; border-radius: var(--radius-sm);
+  font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em;
+  flex-shrink: 0;
+  transition: background var(--t-fast), transform var(--t-fast);
+}
+.btn-download-report:hover { background: var(--c-teal-dark); }
+.btn-download-report:active { transform: scale(0.97); }
+.btn-download-report:disabled { opacity: 0.6; cursor: progress; }
+
+.image-modal-body { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
+
+.image-modal-imgs { display: flex; flex-direction: column; gap: 12px; }
+.image-modal-imgs figure { margin: 0; }
+.image-modal-imgs img {
+  width: 100%; border-radius: var(--radius-sm); display: block;
+  background: #0b2338; aspect-ratio: 4/3; object-fit: cover;
+}
+.image-modal-imgs figcaption {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--c-text-muted); margin-top: 6px;
+}
+
+.modal-meta-list { grid-template-columns: 1fr 1fr; align-content: start; }
+
+@media (max-width: 720px) {
+  .image-modal-body { grid-template-columns: 1fr; }
+}
 
 /* =========================================================
    ATTRIBUTION
